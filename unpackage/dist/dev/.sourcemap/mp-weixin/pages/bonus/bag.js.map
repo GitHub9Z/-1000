@@ -1,0 +1,1 @@
+{"version":3,"sources":["uni-app:///main.js"],"names":["createPage","Page"],"mappings":";;;;;;;;;;;;;;;;;;;;;kDAAA;AACA;AACA,wF;AACAA,UAAU,CAACC,YAAD,CAAV,C","file":"pages/bonus/bag.js","sourcesContent":["import 'uni-pages';\nimport Vue from 'vue'\nimport Page from './pages/bonus/bag.vue'\ncreatePage(Page)"],"sourceRoot":""}

@@ -1,0 +1,1 @@
+{"version":3,"sources":["uni-app:///main.js"],"names":["createPage","Page"],"mappings":";;;;;;;;;;kDAAA;AACA;AACA,gH;AACAA,UAAU,CAACC,wBAAD,CAAV,C","file":"view/pages/chooseLogistics.js","sourcesContent":["import 'uni-pages';\nimport Vue from 'vue'\nimport Page from './view/pages/chooseLogistics.vue'\ncreatePage(Page)"],"sourceRoot":""}
