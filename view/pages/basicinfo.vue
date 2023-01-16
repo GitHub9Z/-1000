@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="get_system_info.normal">
 		<cu-custom class="content-title" bgColor="bg-red text-white" border :isBack="true">
 			<block slot="backText">返回</block>
 			<block slot="content">账号管理</block>
@@ -12,7 +12,7 @@
 						<text class="text-grey">头像</text>
 					</view>
 					<view class="action" @click="ChooseImage">
-						<image :src="page_data.basic_info.avatar_url || '/static/venus.png'" mode="aspectFill"></image>
+						<image :src="page_data.basic_info.avatar_url || get_global_config.app_logo" mode="aspectFill"></image>
 					</view>
 				</view>
 				<view class="cu-form-group">
@@ -22,6 +22,34 @@
 					</view>
 					<view class="action">
 						<input placeholder="请输入用户名" v-model="page_data.basic_info.user_name" name="input" style="width: 100%; text-align: right;"></input>
+					</view>
+				</view>
+				<view class="cu-form-group" v-if="get_user_info.user_type === 1">
+					<view class="content">
+						<text class="cuIcon-title text-green"></text>
+						<text class="text-grey" style="white-space: nowrap;">门店地址</text>
+					</view>
+					<view class="action" style="width: 100%;">
+						<input placeholder="请输入门店地址" v-model="page_data.basic_info.address" name="input" style="width: 100%; text-align: right;"></input>
+					</view>
+				</view>
+				<template v-if="get_global_config.mode !== 'single'">
+				<view class="cu-form-group" v-if="get_user_info.user_type === 1">
+					<view class="content">
+						<text class="cuIcon-title text-green"></text>
+						<text class="text-grey">私域模式</text>
+					</view>
+					<view class="action">
+						<switch @change="handlePrivateChange" :class="page_data.basic_info.private ? 'checked' : ''" :checked="page_data.basic_info.private?true:false"></switch>
+					</view>
+				</view>
+				<view class="cu-form-group" v-if="get_user_info.user_type === 1 && page_data.basic_info.private">
+					<view class="content">
+						<text class="cuIcon-title text-green"></text>
+						<text class="text-grey" style="white-space: nowrap;">密钥</text>
+					</view>
+					<view class="action" style="width: 100%;">
+						<input placeholder="请输入私域密钥" v-model="page_data.basic_info.region_id" name="input" style="width: 100%; text-align: right;"></input>
 					</view>
 				</view>
 				<view class="cu-form-group" v-if="get_user_info.user_type === 1">
@@ -41,14 +69,18 @@
 				<view class="cu-form-group" v-if="page_data.basic_info.locationPool.length > 0">
 					<view class="padding-bottom-sm">
 						<view class='cu-tag line-red margin-top-sm margin-lr-xs' v-for="(item, index) in page_data.basic_info.locationPool"
-						 @click="handleLocationDelete(index)">{{areaJson[item[0]].name}}{{areaJson[item[0]].city[item[1]] ? ` - ${areaJson[item[0]].city[item[1]].name}` : ''}}{{areaJson[item[0]].city[item[1]].area[item[2]] ? ` - ${areaJson[item[0]].city[item[1]].area[item[2]]}` : ''}}</view>
+						 @click="handleLocationDelete(index)">{{areaJson[item[0]].name}}{{areaJson[item[0]].city[item[1]] ? ` - ${areaJson[item[0]].city[item[1]].name}` : ''}}{{areaJson[item[0]].city[item[1]].area[item[2]] ? ` - ${areaJson[item[0]].city[item[1]].area[item[2]]}` : ''}}<text class="cuIcon-close text-red margin-left-xs"></text></view>
 					</view>
 				</view>
+				</template>
 			</form>
 		</view>
 		<view class="content-save">
 			<button class="cu-btn bg-red lg" @click="handleSaveClick">保存</button>
 		</view>
+	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
 	</view>
 </template>
 
@@ -91,7 +123,7 @@
 		},
 		onShow() {},
 		computed: {
-			...mapGetters(['get_system_info', 'get_user_info']),
+			...mapGetters(['get_system_info', 'get_user_info', 'get_global_config']),
 			location() {
 				return this.page_data.basic_info.locationPool.length <= 0 ? '不限' :
 					`已选${this.page_data.basic_info.locationPool.length}个`
@@ -104,7 +136,10 @@
 				this.page_data.basic_info = {
 					avatar_url: this.get_user_info.avatar_url,
 					user_name: this.get_user_info.user_name,
-					locationPool: JSON.parse(this.get_user_info.location || '[]')
+					address: this.get_user_info.address,
+					locationPool: JSON.parse(this.get_user_info.location || '[]'),
+					private: !!this.get_user_info.private,
+					region_id: this.get_user_info.region_id
 				}
 			},
 			ChooseImage() {
@@ -125,7 +160,20 @@
 				})
 			},
 			handleLocationDelete(index) {
-				this.page_data.basic_info.locationPool.splice(index, 1)
+				uni.showModal({
+					title: '提示',
+					content: '是否删除该地区',
+					cancelText: "取消", // 取消按钮的文字  
+					confirmText: "确认", // 确认按钮文字  
+					showCancel: true, // 是否显示取消按钮，默认为 true
+					confirmColor: '#f55850',
+					cancelColor: '#39B54A',
+					success: (res) => {
+						if (res.confirm) {
+							this.page_data.basic_info.locationPool.splice(index, 1)
+						} else {}
+					}
+				})
 			},
 			handleLocationMultiChange(e) {
 				this.locationMultiIndex = e.detail.value
@@ -161,7 +209,10 @@
 						basic_info: {
 							avatar_url: this.page_data.basic_info.avatar_url,
 							user_name: this.page_data.basic_info.user_name,
-							location: JSON.stringify(this.page_data.basic_info.locationPool || [])
+							address: this.page_data.basic_info.address,
+							location: JSON.stringify(this.page_data.basic_info.locationPool || []),
+							private: this.page_data.basic_info.private,
+							region_id: this.page_data.basic_info.region_id
 						}
 					},
 					header: {
@@ -182,6 +233,14 @@
 						}
 					}
 				})
+			},
+			handlePrivateChange(e) {
+				this.page_data.basic_info.private = e.detail.value
+				if (this.page_data.basic_info.private) {
+					this.page_data.basic_info.region_id = this.randomString(16) + new Date().valueOf()
+				} else {
+					this.page_data.basic_info.region_id = undefined
+				}
 			}
 		},
 	}

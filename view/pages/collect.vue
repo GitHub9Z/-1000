@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="get_system_info.normal">
 		<cu-custom :isBack="true" bgColor="bg-red text-white">
 			<block slot="backText">返回</block>
 			<block slot="content">我的关注</block>
@@ -18,6 +18,9 @@
 			</view>
 		</view>
 		<empty text="暂无关注用户哦" v-else></empty>
+	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
 	</view>
 </template>
 
@@ -44,7 +47,7 @@
 			this.fetchData()
 		},
 		computed: {
-			//...mapGetters(['get_user_info'])
+			...mapGetters(['get_system_info'])
 		},
 		methods: {
 			fetchData() {

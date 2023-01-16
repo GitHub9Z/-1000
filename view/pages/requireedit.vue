@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="get_system_info.normal">
 		<cu-custom class="content-title" bgColor="bg-red text-white" border :isBack="true">
 			<block slot="backText">返回</block>
 			<block slot="content">择偶标准</block>
@@ -116,6 +116,9 @@
 		<view class="content-save">
 			<button class="cu-btn bg-red lg" @click="handleSaveClick">保存</button>
 		</view>
+	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
 	</view>
 </template>
 

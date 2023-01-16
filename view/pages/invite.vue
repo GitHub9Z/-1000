@@ -1,9 +1,9 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="get_system_info.normal">
 		<!-- 		<cu-custom class="content-title" bgColor="text-white bg-blue" :isBack="true">
 		</cu-custom> -->
 		<view class="content-back bg-red">
-			<image class="content-back-logo" src="/static/venus.png" mode="aspectFill"></image>
+			<image class="content-back-logo" :src="get_global_config.app_logo" mode="aspectFill"></image>
 		</view>
 		<view class="content-main">
 			<view class="content-main-title">请输入邀请码</view>
@@ -14,9 +14,12 @@
 			</view>
 			<view class="content-main-btn"><button class="cu-btn bg-red margin-tb-sm lg round" style="width: 100%;" :disabled="!page_status.invite_id"
 				 @click="hanldeConfirmClick">确认</button></view>
-			<view class="content-main-tip"><text class="lg text-gray cuIcon-questionfill" style="margin-right: 3px;"></text>INLAY采用1对1私人服务模式，将为您提供一名专属红娘。
-			<text class="lg text-red" style="margin-right: 3px;" @click="hanldeConfirmAdminClick">我是红娘</text></view>
+			<view class="content-main-tip"><text class="lg text-gray cuIcon-questionfill" style="margin-right: 3px;"></text>{{get_global_config.app_name}}采用1对1私人服务模式，您将拥有一个专属单身俱乐部。
+			<text class="lg text-red" style="margin-right: 3px;" @click="hanldeConfirmAdminClick">我想成立一个俱乐部</text></view>
 		</view>
+	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
 	</view>
 </template>
 
@@ -35,10 +38,15 @@
 				}
 			}
 		},
-		async onLoad() {},
+		async onLoad() {
+			if (this.get_global_config.mode === 'single' && this.get_global_config.admin_info) {
+				this.page_status.invite_id = this.get_global_config.admin_info.invite_id
+				this.hanldeConfirmClick()
+			}
+		},
 		async onShow() {},
 		computed: {
-			...mapGetters(['get_user_info'])
+			...mapGetters(['get_system_info', 'get_user_info', 'get_global_config'])
 		},
 		methods: {
 			hanldeConfirmClick() {

@@ -1,8 +1,8 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="get_system_info.normal">
 		<view class="content-main">
 			<view class="content-main-logo">
-				<image src="/static/venus.png" mode="aspectFill"></image>
+				<image style="border-radius: 50%;" :src="get_global_config.app_logo" mode="aspectFill"></image>
 			</view>
 			<view class="content-main-user">
 				<navigator hover-class='none' url="/view/pages/user" navigateTo>
@@ -21,36 +21,67 @@
 				<image src="/static/user_scan.png" mode="aspectFill"></image>
 			</view>
 			<view class="content-main-welcom">
-				欢迎来到<view class="content-main-welcom-logo">INLAY</view>
+				欢迎来到<view class="content-main-welcom-logo">{{get_global_config.app_name}}</view>
 			</view>
 			<view class="content-main-luck">
-				我们将会是您最具想象力的爱情订制管家
+				我们将为您带来额外的收入
 			</view>
-			<view class="content-main-btns">
-				<navigator hover-class='none' url="/view/pages/recommend" navigateTo>
-					<view class="content-main-btns-btn" :class="{ disabled: get_user_info.user_type === 1 }">
+			<view class="content-main-btns" v-if="get_user_info.user_type === 0">
+				<view @click="handleNavigatorTo('/view/pages/recommend')">
+					<view class="content-main-btns-btn">
 						<text class="cuIcon-discoverfill text-green"></text>
 						<text class="content-main-btns-btn-label">推荐</text>
 					</view>
-				</navigator>
-				<navigator hover-class='none' url="/view/pages/find" navigateTo>
+				</view>
+				<view @click="handleNavigatorTo('/view/pages/find')">
 					<view class="content-main-btns-btn">
 						<text class="cuIcon-radioboxfill text-red"></text>
 						<text class="content-main-btns-btn-label">发现</text>
 					</view>
-				</navigator>
-				<navigator hover-class='none' url="/view/pages/date" navigateTo>
-					<view class="content-main-btns-btn" :class="{ disabled: get_user_info.user_type === 1 }">
+				</view>
+				<view @click="handleNavigatorTo('/view/pages/date')">
+					<view class="content-main-btns-btn">
 						<text class="cuIcon-weixin text-brown"></text>
 						<text class="content-main-btns-btn-label">约会</text>
 					</view>
-				</navigator>
-				<view class="content-main-btns-btn disabled" @click="handleBagClick">
+				</view>
+				<view @click="handleNavigatorTo('/view/pages/activityList')">
+					<view class="content-main-btns-btn">
+						<text class="cuIcon-favorfill text-yellow"></text>
+						<text class="content-main-btns-btn-label">活动</text>
+					</view>
+				</view>
+				<!-- <view class="content-main-btns-btn disabled" @click="handleBagClick">
 					<text class="cuIcon-presentfill text-yellow"></text>
 					<text class="content-main-btns-btn-label">订制</text>
+				</view> -->
+			</view>
+			<view class="content-main-btns" v-if="get_user_info.user_type === 1">
+				<view @click="handleNavigatorTo('/view/pages/find')">
+					<view class="content-main-btns-btn">
+						<text class="cuIcon-radioboxfill text-red"></text>
+						<text class="content-main-btns-btn-label">发现</text>
+					</view>
+				</view>
+				<view @click="handleNavigatorTo('/view/pages/apply')">
+					<view class="content-main-btns-btn">
+						<text class="cuIcon-myfill text-green"></text>
+						<text class="content-main-btns-btn-label">新的用户</text>
+					</view>
 				</view>
 			</view>
 		</view>
+		<view class="content-course" v-if="get_user_info.user_type === 0 && !get_user_info.user_info && page_status.current_course <= 4">
+			<view class="content-course-card">
+				<image :src="'https://venus-image.oss-cn-beijing.aliyuncs.com/client_step_' + page_status.current_course + '.png'" mode="widthFix"/>
+				<view class="content-course-card-console bg-red">
+					<button class="cu-btn bg-red lg" @click="handleCourseNextClick">我知道了</button>
+				</view>
+			</view>
+		</view>
+	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
 	</view>
 </template>
 
@@ -64,26 +95,32 @@
 	export default {
 		data() {
 			return {
-				page_status: {},
+				page_status: {
+					current_course: 1
+				},
 				page_data: {
 					scan_specie: null
 				}
 			}
 		},
-		// async onLoad() {
-		// 	await this.GET_USER_INFO()
-		// 	this.set_find_condition(JSON.parse(this.get_user_info.user_require))
-		// },
+		async onLoad() {
+			this.GET_ADMIN_INFO()
+		},
 		async onShow() {
 			await this.GET_USER_INFO()
 			this.set_find_condition(JSON.parse(this.get_user_info.user_require || '{}'))
 		},
 		computed: {
-			...mapGetters(['get_user_info'])
+			...mapGetters(['get_system_info', 'get_user_info', 'get_global_config'])
 		},
 		methods: {
-			...mapActions(['GET_USER_INFO']),
+			...mapActions(['GET_USER_INFO', 'GET_ADMIN_INFO']),
 			...mapMutations(['set_find_condition']),
+			handleNavigatorTo(url) {
+				uni.navigateTo({
+					url
+				})
+			},
 			handleModalClose() {
 				this.page_data.scan_specie = null
 			},
@@ -148,6 +185,9 @@
 						console.log('失败：', res);
 					}
 				})
+			},
+			handleCourseNextClick() {
+				this.page_status.current_course ++
 			}
 		}
 	}
@@ -285,7 +325,7 @@
 					font-weight: 500;
 					//color: #4e952e;
 					color: red;
-					font-size: 60px;
+					font-size: 35px;
 					animation: glow 19800ms ease-out infinite alternate;
 				}
 			}
@@ -350,6 +390,33 @@
 				font-weight: bold;
 				color: white;
 				background-color: #F56C6C;
+			}
+		}
+		.content-course {
+			position: fixed;
+			top: 0;
+			left: 0;
+			height: 100vh;
+			width: 100vw;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: rgba(0, 0, 0, 0.8);
+			.content-course-card {
+				background-color: white;
+				border-radius: 10px;
+				overflow: hidden;
+				image {
+					vertical-align: bottom;
+				}
+				.content-course-card-console {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					button {
+						width: 100%;
+					}
+				}
 			}
 		}
 	}

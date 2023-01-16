@@ -1,8 +1,8 @@
 <template>
-	<view>
+	<view v-if="get_system_info.normal">
 		<cu-custom bgColor="bg-red text-white" :isBack="true">
 			<block slot="backText">返回</block>
-			<block slot="content">选择红娘</block>
+			<block slot="content">选择单身俱乐部</block>
 		</cu-custom>
 		<view class="bg-white search fixed" :style="[{top:CustomBar + 'px'}]">
 			<view class="cu-list menu  solids-bottom " style="width: 100%;">
@@ -26,7 +26,7 @@
 			<view class="cu-list menu sm-border " style="width: 100%;">
 				<view class="cu-item" v-for="admin in page_data.admin_list" @click="handleItemClick(admin)">
 					<view class="cu-avatar round lg" style="overflow: hidden; margin: 12px 12px 12px 0;">
-						<image style="height: 42px; width: 42px;" :src="admin.avatar_url || '/static/venus.png'" mode="aspectFill"></image>
+						<image style="height: 100%; width: 100%;" :src="admin.avatar_url || get_global_config.app_logo" mode="aspectFill"></image>
 					</view>
 					<view class="content">
 						<view class="text-grey">{{admin.user_name}}</view>
@@ -37,7 +37,10 @@
 				</view>
 			</view>
 		</template>
-		<empty text="暂无该地区的红娘信息" v-else></empty>
+		<empty text="该地区暂未成立单身俱乐部" v-else></empty>
+	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
 	</view>
 </template>
 
@@ -75,7 +78,7 @@
 			Empty
 		},
 		computed: {
-			...mapGetters(['get_user_info']),
+			...mapGetters(['get_system_info', 'get_user_info', 'get_global_config']),
 			loc() {
 				if (!this.page_status.locIndex) return '请选择'
 				let [province_index, city_index, area_index] = this.page_status.locIndex
@@ -107,7 +110,7 @@
 			handleItemClick(admin) {
 				uni.showModal({
 					title: '提示',
-					content: '绑定红娘后不可自行更换，是否确认？',
+					content: `是否申请加入${admin.user_name}？${this.get_user_info.invite_id ? '(申请后将退出原俱乐部且会员信息不再保留，且在此之前的俱乐部申请将自动取消)' : ''}`,
 					cancelText: "取消", // 取消按钮的文字  
 					confirmText: "确认", // 确认按钮文字  
 					showCancel: true, // 是否显示取消按钮，默认为 true
@@ -118,19 +121,17 @@
 							uni.request({
 								url: 'https://www.imgker.com/venus/user/bind_admin', //仅为示例，并非真实接口地址。
 								data: {
-									invite_id: admin.invite_id
+									invite_id: admin.invite_id + '=='
 								},
 								header: {
 									'custom-header': 'hello' //自定义请求头信息
 								},
 								success: (res) => {
 									uni.showToast({
-										title: '绑定成功',
+										title: '申请成功',
 										duration: 2000
 									})
-									uni.redirectTo({
-										url: './home'
-									})
+									uni.navigateBack()
 								}
 							})
 						} else {

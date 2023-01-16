@@ -8,10 +8,10 @@
 			"path": "view/pages/login",
 			"style": {}
 		}, {
-			"path": "view/pages/invite",
+			"path": "view/pages/detail",
 			"style": {}
 		}, {
-			"path": "view/pages/detail",
+			"path": "view/pages/apply",
 			"style": {}
 		}, {
 			"path": "view/pages/detailedit",
@@ -23,12 +23,36 @@
 			"path": "view/pages/recommend",
 			"style": {}
 		}, {
+			"path": "view/pages/activityedit",
+			"style": {}
+		}, {
+			"path": "view/pages/activityDetail",
+			"style": {}
+		}, {
+			"path": "view/pages/activityList",
+			"style": {}
+		}, {
+			"path": "view/pages/activityAdminList",
+			"style": {}
+		}, {
+			"path": "view/pages/activityUserList",
+			"style": {}
+		}, {
 			"path": "view/pages/find",
 			"style": {
 				"enablePullDownRefresh": true
 			}
 		}, {
 			"path": "view/pages/findcond",
+			"style": {}
+		}, {
+			"path": "view/pages/usermanage",
+			"style": {}
+		}, {
+			"path": "view/pages/levalmanage",
+			"style": {}
+		}, {
+			"path": "view/pages/editleval",
 			"style": {}
 		}, {
 			"path": "view/pages/qrcode",
@@ -52,8 +76,13 @@
 			"path": "view/pages/collect",
 			"style": {}
 		}, {
-			"path": "view/pages/date",
+			"path": "view/pages/adminConsole",
 			"style": {}
+		}, {
+			"path": "view/pages/date",
+			"style": {
+				"enablePullDownRefresh": true
+			}
 		}
 	],
 	"globalStyle": {
@@ -63,7 +92,7 @@
 			"allowsBounceVertical": "NO"
 		},
 		"navigationBarBackgroundColor": "#0081ff",
-		"navigationBarTitleText": "ColorUi for UniApp",
+		"navigationBarTitleText": "INLAY",
 		"navigationStyle": "custom",
 		"navigationBarTextStyle": "white"
 	},

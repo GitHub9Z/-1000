@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="get_system_info.normal">
 		<cu-custom class="content-title" bgColor="bg-red text-white" border :isBack="true">
 			<block slot="backText">返回</block>
 			<block slot="content">编辑资料</block>
@@ -34,7 +34,7 @@
 							<text class="text-grey">自我介绍</text>
 						</view>
 						<view class="content padding-tb padding-lr-sm">
-							<textarea maxlength="-1" placeholder="多行文本输入框" v-model="page_data.user_info.introduction"></textarea>
+							<textarea maxlength="140" placeholder="多行文本输入框" v-model="page_data.user_info.introduction"></textarea>
 						</view>
 					</view>
 				</view>
@@ -45,8 +45,8 @@
 							<text class="text-grey">兴趣标签</text>
 						</view>
 						<view class="padding-tb padding-lr-sm">
-							<view class='cu-tag' :class="'line-' + page_config.color_config[index]" v-for="(item, index) in page_data.user_info.hobby" @click="handleHobbyDelete(index)">{{item}}</view>
-							<view class='cu-tag line-grey' @click="handleHobbyAdd">添加 +</view>
+							<view class='cu-tag' :class="'line-' + page_config.color_config[index]" style="margin: 0 10rpx 10rpx 0" v-for="(item, index) in page_data.user_info.hobby" @click="handleHobbyDelete(index)">{{item}}<text class="cuIcon-close text-red margin-left-xs"></text></view>
+							<view class='cu-tag line-grey' style="margin: 0 10rpx 10rpx 0" @click="handleHobbyAdd">添加 +</view>
 						</view>
 					</view>
 				</view>
@@ -175,6 +175,9 @@
 			</view>
 		</view>
 	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
+	</view>
 </template>
 
 <script>
@@ -219,7 +222,7 @@
 						marriage: '',
 						hobby: [],
 						date: '',
-						job: '程序员',
+						job: '',
 						bornMultiIndex: null,
 						liveMultiIndex: null,
 					},

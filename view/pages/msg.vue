@@ -1,5 +1,5 @@
 <template>
-	<view class="content">
+	<view class="content" v-if="get_system_info.normal">
 		<cu-custom :isBack="true" bgColor="bg-red text-white">
 			<block slot="backText">返回</block>
 			<block slot="content">消息</block>
@@ -11,7 +11,7 @@
 					<text class="cuIcon-title text-red" style="margin-left: 10px;" v-if="item.msg_status === '未读'"></text>
 					<text class="cuIcon-title text-blue" style="margin-left: 10px;" v-else></text>
 					<view class="content-main-item-head" @click="handleMsgClick(item)">
-						<image :src="`${item.msg_pic || '/static/venus.png'}`"></image>
+						<image :src="`${item.msg_pic || get_global_config.app_logo}`"></image>
 					</view>
 					<view style="width: 100%;" @click="handleMsgClick(item)">
 						<text class="content-main-item-title">#{{item.msg_title}}#</text>
@@ -31,6 +31,9 @@
 			</view>
 			<empty text="暂无收到消息哦" v-else></empty>
 		</view>
+	</view>
+	<view v-else>
+		<image style="width: 100vw" mode="widthFix" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01f0aa5632bd736ac7259e0fd710d4.jpg%401280w_1l_2o_100sh.png&refer=http%3A%2F%2Fimg.zcool.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1626514551&t=14341f62bcbb3a98a3b03dade4cbafbe"></image>
 	</view>
 </template>
 
@@ -58,7 +61,7 @@
 			this.fetchData()
 		},
 		computed: {
-			...mapGetters(['get_user_info'])
+			...mapGetters(['get_system_info', 'get_user_info', 'get_global_config'])
 		},
 		methods: {
 			fetchData() {

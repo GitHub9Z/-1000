@@ -58,10 +58,9 @@ const store = {
 			let info = JSON.parse(user_info.user_info || '{}')
 			user_info.integrity = Math.floor(Object.keys(info).filter(_i => info[_i] && JSON.stringify(info[_i]) !== '[]').length * 100 / 11)
 			state.user_info = user_info
-			console.log(user_info)
-			if ((user_info.user_type === 0) && !user_info.invite_id) uni.navigateTo({
-				url: './invite'
-			})
+			// if ((user_info.user_type === 0) && !user_info.invite_id) uni.navigateTo({
+			// 	url: './invite'
+			// })
 		}
 	},
 	actions: {

@@ -17,7 +17,7 @@
 			console.log('App Hide')
 		},
 		methods: {
-			...mapActions(['GET_SYSTEM_INFO'])
+			...mapActions(['GET_SYSTEM_INFO', 'GET_ADMIN_INFO'])
 		}
 
 	}
